@@ -14,4 +14,4 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('insert','ConverterController@toArrays');
+Route::post('insert','ConverterController@toArrays');
