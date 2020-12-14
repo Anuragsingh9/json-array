@@ -15,9 +15,9 @@ class ConverterController extends Controller
             $bounceType = $objs['bounce']['bounceType'];
             $bounceSubType = $objs['bounce']['bounceSubType'];
             $timestamp = $objs['bounce']['timestamp'];
-            $time = $timestamp->Carbon::create()->format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            $time = date('Y-m-d h:i:s', strtotime($timestamp));
             $mailTimestamp = $objs['mail']['timestamp'];
-            $mailTime = $mailTimestamp->Carbon::create()->format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            $mailTime = date('Y-m-d h:i:s', strtotime($mailTimestamp));
             $name = $objs['mail']['headers'][0]['name'];
             $value = $objs['mail']['headers'][1]['value'];
             $from = $objs['mail']['commonHeaders']['from'];
