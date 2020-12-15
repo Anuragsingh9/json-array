@@ -15,3 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('insert','ConverterController@toArrays');
+Route::get('get-data','ConverterController@getData');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

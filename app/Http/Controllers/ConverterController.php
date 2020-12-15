@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Converter;
 use Carbon\Carbon;
@@ -24,21 +24,30 @@ class ConverterController extends Controller
             $replyTo = $objs['mail']['commonHeaders']['replyTo'];
             $to = $objs['mail']['commonHeaders']['to'];
 
-            $bouncedRecipients = $objs['bounce']['bouncedRecipients'][0]['emailAddress'];
             $param = [
-                'bounce_type' =>$bounceType,
-                'bounceSubType' =>$bounceSubType,
-                'timestamp' =>$time,
-                'mail_timestamp' =>$mailTime,
-                'name' =>$name,
-                'value' =>$value,
-                'from' =>$from,
-                'reply_to' =>$replyTo,
-                'to' =>$to,
+                'user_id' => Auth::user()->id,
+                'bounce_type' => $bounceType,
+                'bounceSubType' => $bounceSubType,
+                'timestamp' => $time,
+                'mail_timestamp' => $mailTime,
+                'name' => $name,
+                'value' => $value,
+                'from' => $from,
+                'reply_to' => $replyTo,
+                'to' => $to,
             ];
             $data = Converter::create($param);
+            return response()->json(['status'=>TRUE, 'data'=>'Data inserted','content' => $data],200);
+    }
 
-            return response()->json(['status'=>TRUE, 'data'=>'Data inserted'],200);
+    public function getData(){
+        $data = Converter::where('user_id',Auth::user()->id)->get();
+        $check = $data->count();
+        if($check !== 0){
+            return view('show',compact('data'));
+        }
+//                return view('show',compact($data));
+        return view('show',compact('data'));
 
-}
+    }
 }
