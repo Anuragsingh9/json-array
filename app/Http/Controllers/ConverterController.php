@@ -20,9 +20,9 @@ class ConverterController extends Controller
             $mailTime = date('Y-m-d h:i:s', strtotime($mailTimestamp));
             $name = $objs['mail']['headers'][0]['name'];
             $value = $objs['mail']['headers'][1]['value'];
-            $from = $objs['mail']['commonHeaders']['from'];
-            $replyTo = $objs['mail']['commonHeaders']['replyTo'];
-            $to = $objs['mail']['commonHeaders']['to'];
+            $from = $objs['mail']['commonHeaders']['from'][0];
+            $replyTo = $objs['mail']['commonHeaders']['replyTo'][0];
+            $to = $objs['mail']['commonHeaders']['to'][0];
 
             $param = [
                 'user_id' => Auth::user()->id,
@@ -40,11 +40,13 @@ class ConverterController extends Controller
             return response()->json(['status'=>TRUE, 'data'=>'Data inserted','content' => $data],200);
     }
 
-    public function getData(){
-        $data = Converter::where('user_id',Auth::user()->id)->get();
+    public function getData($numberOfEntries = 3){
+        $counts = Converter::where('user_id',Auth::user()->id)->get();
+        $count = $counts->count();
+        $data = Converter::where('user_id',Auth::user()->id)->paginate($numberOfEntries);
         $check = $data->count();
         if($check !== 0){
-            return view('show',compact('data'));
+            return view('show',compact('data','count','numberOfEntries'));
         }
 //                return view('show',compact($data));
         return view('show',compact('data'));
