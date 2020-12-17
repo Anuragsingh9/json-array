@@ -40,9 +40,13 @@ class ConverterController extends Controller
             return response()->json(['status'=>TRUE, 'data'=>'Data inserted','content' => $data],200);
     }
 
-    public function getData($numberOfEntries = 3){
+    public function countEntries(){
         $counts = Converter::where('user_id',Auth::user()->id)->get();
-        $count = $counts->count();
+        return $counts->count();
+    }
+
+    public function getData($numberOfEntries = 3){
+        $count = $this->countEntries();
         $data = Converter::where('user_id',Auth::user()->id)->paginate($numberOfEntries);
         $check = $data->count();
         if($check !== 0){
