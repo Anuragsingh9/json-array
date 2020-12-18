@@ -51,13 +51,28 @@ class ConverterController extends Controller
         return $counts->count();
     }
 
-    public function getData($numberOfEntries = 3){
-            $count = $this->countEntries();
+    public function getData(Request $request,$numberOfEntries = 3){
+        $count = $this->countEntries();
             $data = Converter::paginate($numberOfEntries);
             $check = $data->count();
             if($check !== 0){
+//                return view('calender');
                 return view('show',compact('data','count','numberOfEntries'));
             }
-        return response()->json(['status' => false, 'data' => 'Unauthorised Action']);
+        return response()->json(['status' => false, 'data' => 'No data found']);
+    }
+
+    public function filterByDates(Request $request){
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date;
+        $toDate = date('Y-m-d', strtotime($toDate));
+        $fromDate = date('Y-m-d', strtotime($fromDate));
+        $dateData = Converter::where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)->paginate(5);
+        $check = $dateData->count();
+        if($check !== 0){
+//                return view('calender');
+            return view('showbydate',compact('dateData'));
+        }
+        return response()->json(['status' => false, 'data' => 'No data found']);
     }
 }

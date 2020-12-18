@@ -19,5 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('insert','ConverterController@toArrays');
 Route::get('get-data','ConverterController@getData');
-
 Route::get('get-data/{number}','ConverterController@getData')->name('get-data');
+Route::get('data/date','ConverterController@filterByDates')->name('data/date');
