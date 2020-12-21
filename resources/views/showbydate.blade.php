@@ -19,12 +19,25 @@
     <table class="table table-hover" >
         <h2 style="margin-left: 430px; font-family: inherit;color: darkblue;">Filter Your Data Tables</h2>
         <br>
-        <form method="get" action="{{url('api/data/date')}}">
+                <div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div><br />
+                    @endif
+                </div>
+        <form method="get" action="{{url('/data/date')}}">
             <div class="input-group mt-3 mb-3 row" style="display: flex; font-size: 25px; color:#2323b3;" >
                 <div class="input-group-prepend col-md-12" >
                     {{ $dateData->links() }}
-                    <input class="date form-control col-md-2" type="text" name="from_date" placeholder="From date" style="margin-left: auto;">
-                    <input class="date form-control col-md-2" type="text" name="to_date" placeholder="To">
+                    <input class="date form-control col-md-2" type="text" autocomplete="off" name="from_date" placeholder="From date" style="margin-left: auto;">
+                    <input class="date form-control col-md-2" type="text" autocomplete="off" name="to_date" placeholder="To">
+                    <input class=" form-control col-md-2"  autocomplete="off" type="email" name="from_email"  placeholder="From abc@xyz.com" >
+                    <input class=" form-control col-md-2"  autocomplete="off" type="email" name="to_email" placeholder="To abc@xyz.com">
                     <button type="submit" href="{{ route('data/date') }}" class="btn btn-primary" style="margin-left: 6px;">Primary</button>
                 </div>
 
