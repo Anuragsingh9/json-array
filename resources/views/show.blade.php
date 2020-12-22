@@ -8,18 +8,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-{{--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">--}}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>--}}
 </head>
 <body style="font-size:14px; background-color: #e7eff1;">
 
     <table class="table table-hover" >
     <h2 style="margin-left: 430px; font-family: inherit;color: darkblue;">Filter Your Data Tables</h2>
-    <br>
+        <br>
         <div>
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -31,8 +28,8 @@
                 </div><br />
             @endif
         </div>
-        <form method="get" action="{{url('/data/date')}}">
-        <div class="input-group mt-3 mb-3 row" >
+        <form method="GET" action="{{url('/data/date')}}">
+        <div class="form-group row" >
             <div class="input-group-prepend col-md-12" >
                 <p style="font-size: 17px; padding-right: 5px; margin-left: 10px; color:#2323b3" >Select</p>
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">
@@ -48,27 +45,22 @@
                     <input class="date form-control col-md-2"  autocomplete="off" type="text" name="to_date" placeholder="To">
                     <input class=" form-control col-md-2"  autocomplete="off" type="email" name="from_email"  placeholder="From abc@xyz.com" >
                     <input class=" form-control col-md-2"  autocomplete="off" type="email" name="to_email" placeholder="To abc@xyz.com">
-                    <button type="submit" href="{{ route('data/date') }}" class="btn btn-primary" style="margin-left: 6px; font-size: 0.8em;">Primary</button>
+                    <button type="submit" href="{{ route('data/date') }}" class="btn btn-primary" style="margin-left: 6px; font-size: 0.8em;">Search</button>
             </div>
         </div>
     </form>
-{{--        <div class="row">--}}
-{{--            <form method="get"   action="{{ url('api/data/date') }}" class="form-inline">--}}
-{{--                {{ csrf_field() }}--}}
-{{--                --}}{{--            <div class="form-group mb-2 col-md-4">--}}
-{{--                --}}{{--                <label for="staticEmail2" class="sr-only">Email</label>--}}
-{{--                --}}{{--                <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com">--}}
-{{--                --}}{{--            </div>--}}
-{{--                --}}{{--            <div class="form-group mx-sm-3 mb-2 col-md-4">--}}
-{{--                <input class="date form-control col-md-2" type="text" name="from_date" placeholder="From date" style="margin-left: auto;">--}}
-{{--                <input class="date form-control col-md-2" type="text" name="to_date" placeholder="To">--}}
-{{--                --}}{{--            </div>--}}
-{{--                <a class="btn btn-primary mb-2" href="{{route('data/date')}}" > Search</a>--}}
-
-{{--                 <button type="submit" class="btn btn-primary mb-2" style="margin-left: 6px;">Search</button>--}}
-{{--            </form>--}}
-
-{{--        </div>--}}
+        <div class="row">
+            <div class="col-md-4"></div>
+                <div class="col-md-4">
+                @if(session('notice'))
+                    <div class="alert alert-danger" >
+                        <ul>
+                            <li > {!! session('notice') !!}</li>
+                        </ul>
+                    </div><br />
+                @endif
+            </div><div class="col-md-4"></div>
+        </div>
 
     <div class="row">
         <div class="col-lg-12" style="display: flex; font-size: 25px; color:#2323b3;">
@@ -76,15 +68,15 @@
                 Showing  {{$data->count()}} out of {{$count}} entries
             </div>
             <div class="col-lg-6" >
-                {{ $data->links() }}
+                <a style="color:#2323b3" href="{{ $data->previousPageUrl()}}">Previous</a>
+                <a style="color:#2323b3" href="{{ $data->nextPageUrl() }}">Next</a>
             </div>
 
         </div>
     </div>
-
         <thead style="border-bottom: groove;">
                     <tr>
-                        <th>S.No</th>
+                        <th style="background-color: #d9dfe8;">S.No</th>
                         <th>Bounce Type</th>
                         <th>Bounce Sub Type</th>
                         <th>Timestamp</th>
@@ -101,7 +93,7 @@
                    @foreach($data as $details)
 
                     <tr style="color:#2323b3">
-                        <td>{{$loop->iteration}}</td>
+                        <td style="background-color: #d9dfe8;">{{$loop->iteration}}</td>
                         <td>{{ $details->bounce_type }}</td>
                         <td>{{ $details->bounceSubType }}</td>
                         <td>{{ $details->timestamp }}</td>
@@ -115,11 +107,18 @@
                     </tr>
                     @endforeach
                 </table>
+    <div class="row" style="background-color: #cadce8;" >
+        <div class="col-md-5"></div>
+        <div class="col-md-2" style="font-size: 25px; ">
+                            {{ $data->links() }}
+        </div>
+        <div class="col-md-5"></div>
 
+    </div>
     <script type="text/javascript">
         $('.date').datepicker({
-            // format: 'yyyy-mm-dd'
-            dateFormat: 'dd/mm/yy'
+            format: 'yyyy-mm-dd'
+            // dateFormat: 'dd/mm/yy'
         });
     </script>
 </body>

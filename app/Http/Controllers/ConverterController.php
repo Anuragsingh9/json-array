@@ -73,7 +73,9 @@ class ConverterController extends Controller
             $fromEmail = $request->from_email;
             $toEmail = $request->to_email;
 
+//            dd($request->all());
             $dateData = $this->filterByAllKeys($fromDate,$toDate,$fromEmail,$toEmail);
+//            dd($dateData);
             return view('showbydate',compact('dateData'));
 
 
@@ -82,25 +84,22 @@ class ConverterController extends Controller
             $toEmail = $request->to_email;
             $dateData = $this->filterByEmails($fromEmail,$toEmail);
             return view('showbydate',compact('dateData'));
-        }elseif ($request->filled('from_date') && $request->filled('to_date') &&
-            $request->filled('from_email')){
-//            dd("okkk");
+        }
+        elseif ($request->filled('from_date') && $request->filled('from_email')){
             $fromDate = $request->from_date;
-            $toDate = $request->to_date;
+//            $toDate = $request->to_date;
             $fromEmail = $request->from_email;
 
-            $dateData = $this->filterByDateFromEmails($fromEmail,$fromDate,$toDate);
+            $dateData = $this->filterByDateFromEmails($fromEmail,$fromDate);
+
+//            date('Y-m-d h:i:s', strtotime($mailTimestamp));
             return view('showbydate',compact('dateData'));
 
         }
-        elseif($request->filled('from_date') && $request->filled('to_date') &&
-            $request->filled('to_email')){
-//            dd("okll");
+        elseif($request->filled('from_date') && $request->filled('to_email')){
             $fromDate = $request->from_date;
-            $toDate = $request->to_date;
-//            $fromEmail = $request->from_email;
             $toEmail = $request->to_email;
-            $dateData = $this->filterByDateToEmail($fromDate,$toDate,$toEmail);
+            $dateData = $this->filterByDateToEmail($fromDate,$toEmail);
             return view('showbydate',compact('dateData'));
 
         }
@@ -140,67 +139,73 @@ class ConverterController extends Controller
 //            return view('showbydate',compact('dateData'));
 //
 //        }
-
+//        return response()->json(['data' => "not found"],200);
+        else{
+            if($request->filled('from_date')){
+                $dateData = Converter::where('timestamp','>=',$request->from_date)->paginate(5);
+                return view('showbydate',compact('dateData'));
+            }elseif ($request->filled('to_date')){
+//                dd("oki");
+                $dateData = Converter::where('timestamp','<=',$request->to_date)->paginate(5);
+                return view('showbydate',compact('dateData'));
+            }elseif ($request->filled('from_email')){
+//                dd("oki");
+                $dateData = Converter::where('from',$request->from_email)->paginate(5);
+                return view('showbydate',compact('dateData'));
+            }elseif ($request->filled('to_email')){
+                $dateData = Converter::where('to',$request->to_email)->paginate(5);
+                return view('showbydate',compact('dateData'));
+            }
+//            elseif ( count($request->all()) == 0
+////                $request->empty('from_date') && $request->empty('to_date') &&
+////            $request->empty('from_email') && $request->empty('to_email')
+//            ){
+//                dd("okkk");
+//                $fromDate = $request->from_date;
+//                $toDate = $request->to_date;
+//                $fromEmail = $request->from_email;
+//                $toEmail = $request->to_email;
+//                $dateData = $this->filterByAllKeys($fromDate,$toDate,$fromEmail,$toEmail);
+//                return view('showbydate',compact('dateData'));
+//            }
+        }
+//        dd();
+//            $dateData = $this->filterByAllKeys($request->from_date,$request->to_date,$request->from_email,$request->from_email);
+//            return view('showbydate',compact('dateData'));
+        return redirect()->back()->with('notice','Please select at least one of the fields');
     }
 
     public function filterByAllKeys($fromDate,$toDate,$fromEmail,$toEmail){
-//        dd("okk");
-
         return  Converter::where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)
-//            ->where('from',$fromEmail)->where('to',$toEmail)
-            ->paginate(5);
+            ->where(function ($q) use($fromEmail,$toEmail){
+            $q->where('from',$fromEmail);
+            $q->where('to',$toEmail);
+        })->paginate(5);
     }
 
     public function filterByEmails($fromEmail,$toEmail){
-//        dd("okk");
         return Converter::where('from',$fromEmail)->where('to',$toEmail)->paginate(5);
     }
 
-    public function filterByDateFromEmails($fromEmail,$fromDate,$toDate){
-        return Converter::where('from',$fromEmail)->where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)->paginate(5);
+    public function filterByDateFromEmails($fromEmail,$fromDate){
+        return Converter::whereDate('timestamp','>=',$fromDate)
+            ->where(function ($q) use ($fromEmail){
+            $q->where('from',$fromEmail);
+        })->paginate(5);
     }
 
-//    public function filterByToEmails($toEmail){
-//        return Converter::where('to',$toEmail)->paginate(5);
-////        return view('showbydate',compact('data'));
-//
-//    }
-//    public function filterByToEmails($toEmail)
+
     public function filterByDates($fromDate,$toDate){
-//                    dd("ok");
-
-//        if($request->filled('from_date') && $request->filled('to_date')){
-//
-//        }
-//        $error = $request->validate([
-//            'from_date' => 'required_with:to_date',
-//            'to_date' => 'required_with:from_date',
-////            'to_date' => 'required',
-//
-//        ]);
-
-//        $fromDate = $request->from_date;
-//        $toDate = $request->to_date;
-        $toDate = date('Y-m-d', strtotime($toDate));
-        $fromDate = date('Y-m-d', strtotime($fromDate));
-//        $dateData = Converter::where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)->paginate(5);
         $dateData = Converter::where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)->paginate(5);
         $check = $dateData->count();
         if($check !== 0){
-//                return view('calender');
-//            return redirect('/get-data');
+
             return $dateData;
-//            return view('showbydate',compact('dateData'));
         }
-//        if($error){
-////            dd("ok");
-//            return redirect('/data/date');
-//        }
         return response()->json(['status' => false, 'data' => 'No data found']);
     }
 
-    public function filterByDateToEmail($fromDate,$toDate,$toEmail){
-        return  Converter::where('timestamp','>=',$fromDate)->where('timestamp','<=',$toDate)->where('to',$toEmail)->paginate(5);
-
+    public function filterByDateToEmail($fromDate,$toEmail){
+        return  Converter::where('timestamp','>=',$fromDate)->where('to',$toEmail)->paginate(5);
     }
 }

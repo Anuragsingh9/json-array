@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('insert','ConverterController@toArrays');
-Route::get('get-data','ConverterController@getData');
+Route::get('get-data','ConverterController@getData')->name('get/data');
 Route::get('get-data/{number}','ConverterController@getData')->name('get-data');
 Route::get('data/date','ConverterController@filterByColumns')->name('data/date');
 Auth::routes();

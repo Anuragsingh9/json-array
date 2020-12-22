@@ -15,37 +15,42 @@
 <body style="font-size:14px; background-color: #e7eff1;">
 
 <div class="container">
-
     <table class="table table-hover" >
         <h2 style="margin-left: 430px; font-family: inherit;color: darkblue;">Filter Your Data Tables</h2>
+        <a href="{{ route('get/data') }}" class="btn btn-primary" style="margin-left: 6px; font-size: 0.8em;">Home</a>
         <br>
-                <div>
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div><br />
-                    @endif
-                </div>
         <form method="get" action="{{url('/data/date')}}">
             <div class="input-group mt-3 mb-3 row" style="display: flex; font-size: 25px; color:#2323b3;" >
                 <div class="input-group-prepend col-md-12" >
-                    {{ $dateData->links() }}
+{{--                    <a style="color:#2323b3" href="{{ $dateData->previousPageUrl()}}">Previous</a>--}}
+{{--                    <a style="color:#2323b3" href="{{ $dateData->nextPageUrl() }}">Next</a>--}}
+                    {{ $dateData->appends(Request::all())->links() }}
                     <input class="date form-control col-md-2" type="text" autocomplete="off" name="from_date" placeholder="From date" style="margin-left: auto;">
                     <input class="date form-control col-md-2" type="text" autocomplete="off" name="to_date" placeholder="To">
                     <input class=" form-control col-md-2"  autocomplete="off" type="email" name="from_email"  placeholder="From abc@xyz.com" >
                     <input class=" form-control col-md-2"  autocomplete="off" type="email" name="to_email" placeholder="To abc@xyz.com">
-                    <button type="submit" href="{{ route('data/date') }}" class="btn btn-primary" style="margin-left: 6px;">Primary</button>
-                </div>
+                    <button type="submit" href="{{ route('data/date') }}" class="btn btn-primary" style="margin-left: 6px;">Search</button>
 
+                </div>
             </div>
         </form>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                @if(session('notice'))
+                    <div class="alert alert-danger" >
+                        <ul>
+                            <li > {!! session('notice') !!}
+                        </ul>
+                    </div><br />
+                @endif
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
         <thead style="border-bottom: groove;">
         <tr>
-            <th>S.No</th>
+            <th style="background-color: #d9dfe8;">S.No</th>
             <th>Bounce Type</th>
             <th>Bounce Sub Type</th>
             <th>Timestamp</th>
@@ -62,7 +67,7 @@
         @foreach($dateData as $details)
 
             <tr style="color:#2323b3">
-                <td>{{$loop->iteration}}</td>
+                <td style="background-color: #d9dfe8;">{{$loop->iteration}}</td>
                 <td>{{ $details->bounce_type }}</td>
                 <td>{{ $details->bounceSubType }}</td>
                 <td>{{ $details->timestamp }}</td>
@@ -77,12 +82,22 @@
         @endforeach
 
     </table>
+</div>
+<div class="row" style="background-color: #cadce8;" >
+    <div class="col-md-5"></div>
+    <div class="col-md-2" style="font-size: 25px; ">
+        {{ $dateData->appends(Request::all())->links() }}
+
+{{--        {{ $data->links() }}--}}
+    </div>
+    <div class="col-md-5"></div>
 
 </div>
+
 <script type="text/javascript">
     $('.date').datepicker({
-        // format: 'yyyy-mm-dd'
-        dateFormat: 'dd/mm/yy'
+        format: 'yyyy-mm-dd'
+        // dateFormat: 'dd/mm/yy'
     });
 </script>
 </body>
