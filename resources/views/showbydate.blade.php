@@ -22,8 +22,6 @@
         <form method="get" action="{{url('/data/date')}}">
             <div class="input-group mt-3 mb-3 row" style="display: flex; font-size: 25px; color:#2323b3;" >
                 <div class="input-group-prepend col-md-12" >
-{{--                    <a style="color:#2323b3" href="{{ $dateData->previousPageUrl()}}">Previous</a>--}}
-{{--                    <a style="color:#2323b3" href="{{ $dateData->nextPageUrl() }}">Next</a>--}}
                     {{ $dateData->appends(Request::all())->links() }}
                     <input class="date form-control col-md-2" type="text" autocomplete="off" name="from_date" placeholder="From date" style="margin-left: auto;">
                     <input class="date form-control col-md-2" type="text" autocomplete="off" name="to_date" placeholder="To">
